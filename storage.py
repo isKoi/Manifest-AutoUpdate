@@ -15,13 +15,15 @@ lock = Lock()
 
 
 def get(sha, path):
-    url_list = [f'https://cdn.jsdelivr.net/gh/{repo}@{sha}/{path}',f'https://ghproxy.com/https://raw.githubusercontent.com/{repo}/{sha}/{path}',f'https://raw.staticdn.net/{repo}/{sha}/{path}',f'https://raw.fastgit.org/{repo}/{sha}/{path}'
+    url_list = [f'https://cdn.jsdelivr.net/gh/{repo}@{sha}/{path}',
+                f'https://ghproxy.com/https://raw.githubusercontent.com/{repo}/{sha}/{path}',
+                f'https://raw.staticdn.net/{repo}/{sha}/{path}', f'https://raw.fastgit.org/{repo}/{sha}/{path}'
                 ]
     retry = 8
     while True:
         for url in url_list:
             try:
-                r = requests.get(url,timeout=10)
+                r = requests.get(url, timeout=10)
                 if r.status_code == 200:
                     return r.content
                 elif r.status_code == 404:
@@ -156,7 +158,7 @@ def get_dlc_id(app_id):
     r = requests.get(url)
     if 'commit' in r.json():
         sha = r.json()['commit']['sha']
-        idList = get(sha,'ids.json')
+        idList = get(sha, 'ids.json')
         idList = {} if idList == False else eval(idList)
         if app_id in idList:
             dlc_id = idList[app_id]['dlcid']
@@ -253,9 +255,11 @@ if __name__ == '__main__':
             app(args.app_path)
         else:
             if not args.app_id:
-                args.app_id = input('appid: ')
-            for id in args.app_id:
-                main(id)
+                args.app_id = input('appid:')
+            # 以空格为分隔符将输入的字符串拆分成多个ID
+            app_ids = args.app_id.split()
+            for app_id in app_ids:
+                main(app_id)
     except KeyboardInterrupt:
         exit()
     except:
